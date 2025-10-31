@@ -36,6 +36,8 @@ nodejs_setup(){
     VALIDATE $? "enabling nodejs"
     dnf install nodejs -y &>>$LOG_FILE
     VALIDATE $? "installing nodejs"
+    npm install &>>$LOG_FILE
+    VALIDATE $? "installing dependencies"
 }
 app_setup(){
     id roboshop
@@ -55,10 +57,17 @@ app_setup(){
     unzip /tmp/$app_name.zip &>>$LOG_FILE
     VALIDATE $? "unzipping the $app_name"
 }
+maven_setup(){
+    dnf install maven -y &>>LOG_FILE
+    VALIDATE $? "installing maven"
+    mvn clean package &>>LOG_FILE
+    VALIDATE $? "packaging the shipping application"
+    mv target/shipping-1.0.jar shipping.jar &>>LOG_FILE
+    VALIDATE $? "moving and renaming jar file"
+}
 systemd_setup(){   
     
-    npm install &>>$LOG_FILE
-    VALIDATE $? "installing dependencies"
+    
     cp $SCRIPT_DIR/$app_name.service /etc/systemd/system/$app_name.service
     VALIDATE $? "copying the $app_name service"
     systemctl daemon-reload &>>$LOG_FILE
