@@ -1,31 +1,6 @@
-#!/bin/bash
-USER_ID=$(id -u)
-R="\e[31m"
-G="\e[32m"
-Y="\e[33m"
-N="\e[0m"
-LOGS_FOLDER="/var/log/roboshop.log"
-SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
-LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
-mkdir -p $LOGS_FOLDER
-echo -e "$G this script executed at: $(date)$N" | tee -a $LOG_FILE
-SCRIPT_DIR=$PWD
-
-if [ $USER_ID -ne 0 ]
-then 
-  echo -e "$R ERROR::please run this script with root access $N" | tee -a $LOG_FILE
-else
-   echo -e "$G you are running this script with root access $N" | tee -a $LOG_FILE
-fi
-
-VALIDATE(){
-    if [ $1 -eq 0 ]
-    then
-    echo -e "$G $2..is success $N" | tee -a $LOG_FILE
-    else 
-    echo -e "$R $2..is failure $N" | tee -a $LOG_FILE
-    fi
-}
+source ./common.sh
+app_name=frontend
+check_root
 
 dnf module disable nginx -y &>>$LOG_FILE
 VALIDATE $? "disabling nginx"
@@ -58,4 +33,5 @@ VALIDATE $? "copying the nginx content"
 
 systemctl restart nginx  
 VALIDATE $? "restarting the nginx"
+print_time
 
