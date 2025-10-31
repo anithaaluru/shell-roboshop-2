@@ -48,14 +48,15 @@ app_setup(){
       fi
       mkdir -p /app 
       VALIDATE $? "creating app directory"
-}
-systemd_setup(){   
     curl -o /tmp/$app_name.zip https://roboshop-artifacts.s3.amazonaws.com/$app_name-v3.zip &>>$LOG_FILE
     VALIDATE $? "downloading $app_name"
     rm -rf /app/*
     cd /app 
     unzip /tmp/$app_name.zip &>>$LOG_FILE
     VALIDATE $? "unzipping the $app_name"
+}
+systemd_setup(){   
+    
     npm install &>>$LOG_FILE
     VALIDATE $? "installing dependencies"
     cp $SCRIPT_DIR/$app_name.service /etc/systemd/system/$app_name.service
