@@ -3,8 +3,8 @@ app_name=shipping
 check_root
 echo "please enter the root password" 
 read -s "MYSQL_ROOT_PASSWORD"
-app_setup
 maven_setup
+app_setup
 systemd_setup
  dnf install mysql -y  &>>LOG_FILE
  VALIDATE $? "installing mysql"
